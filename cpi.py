@@ -2,6 +2,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 
 # DICTIONARY FOR ACCESSING MONTH NUMBER
@@ -201,11 +202,15 @@ ax.spines["left"].set_visible(False)
 ax.spines["bottom"].set_visible(False)
 
 ax.set_ylabel("Percent Change", fontsize=8)
-fig.suptitle('Inflation Trend: 1965-Present', fontsize=11.5)
+fig.suptitle('Inflation Trend: 1965-Present', fontsize=11.5, fontfamily='sans-serif')
 
 plt.text(0.6, 0.78, 'Inflation',
      horizontalalignment='center',
      verticalalignment='center',
+     fontfamily='sans-serif',
+     fontsize=11.5,
+     fontweight='bold',
+     color='#575A5C',
      transform = ax.transAxes)
 
 # plt.text(0.2, 0, 'Year-over-year percentage change in the Consumer Price Index | Source: Bureau of Labor Statistics',
@@ -214,6 +219,49 @@ plt.text(0.6, 0.78, 'Inflation',
 # 	     transform = ax.transAxes, fontsize=6, color='gray')
 
 ax.set_xlabel('Year-over-year percentage change in the Consumer Price Index | Source: Bureau of Labor Statistics', fontsize=6, color='gray', loc="left")
+
+
+## PLOT ANNOTATION
+
+# cpi_u_df
+
+last_x_1 = cpi_u_df.index[cpi_u_df["Year"] == 2023][0]
+last_y_1 = cpi_u_df.loc[last_x_1, "Pct_Change"]
+last_val_month_1 =cpi_u_df.loc[last_x_1, "Month"]
+txt_val_1 = str(round(last_y_1*100, 2))
+if float(txt_val_1) > 0:
+	sign = "+"
+elif float(txt_val_1) < 0:
+	sign = "-"
+
+
+
+annot_txt_1 = sign + txt_val_1  + "%"+ " in " + last_val_month_1
+
+ax.plot([last_x_1], [last_y_1], 'o', color='#575A5C', markersize=4)
+txt_x_1 = last_x_1+5
+txt_y_1 = last_y_1
+ax.annotate(annot_txt_1, xy=(last_x_1, last_y_1), xytext=(txt_x_1, txt_y_1))
+
+
+# cpi_less_food_energy_df
+
+last_x_2 = cpi_less_food_energy_df.index[cpi_less_food_energy_df["Year"] == 2023][0]
+last_y_2 = cpi_less_food_energy_df.loc[last_x_2, "Pct_Change"]
+last_val_month_2 = cpi_less_food_energy_df.loc[last_x_2, "Month"]
+txt_val_2 = str(round(last_y_2*100, 2))
+if float(txt_val_2) > 0:
+	sign = "+"
+elif float(txt_val_2) < 0:
+	sign = "-"
+
+annot_txt_2 = sign + txt_val_2 +  "%" + "\n" + " excluding food " + "\n" + " and energy"
+
+ax.plot([last_x_2], [last_y_2], 'o', color='#C8D2D6', markersize=4)
+txt_x_2 = last_x_2+5
+txt_y_2 = last_y_2-0.02
+ax.annotate(annot_txt_2, xy=(last_x_2, last_y_2), xytext=(txt_x_2, txt_y_2))
+
 
 plt.show()
 
